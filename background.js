@@ -1,67 +1,24 @@
 'use strict';
 
 // To show when the last refresh of rates were
+// TODO remove?
 var lastRefreshed = getDate();
-
-// TODO have different base currencies
-var base = 'USD';
-
-// For displaying currencies alphabetically
-var countries = [];
-for (let key of Object.keys(currencies)){
-  countries.push(key);
-}
-countries.sort();
-
-function refreshRates(info, tab){
-  lastRefreshed = getDate();
-
-  var request = new XMLHttpRequest();
-  request.open('GET', 'https://api.exchangeratesapi.io/latest?base=USD', true);
-  request.send();
-  request.onload = function() {
-    var data = JSON.parse(this.response);
-    var rates = data.rates;
-
-    // Save rates to chrome storage
-    chrome.storage.local.set(rates);
-  }
-}
 
 function source(){
   window.open('https://www.github.com/darrenhum', '_blank');
 }
 
 function debugFunction(){
-  /*
-  for (let key of Object.keys(currencies)){
-    console.log(key + ': ' + currencies[key]);
-  }
-  */
-
-  var allCurrencies = [];
-  for (let key of Object.keys(currencies)){
-    allCurrencies.push(key);
-  }
-
-  chrome.storage.local.get(['USD'], function(result){
-    console.log(result);
-  });
-
-  // To get all values
-  /*
-  chrome.storage.local.get(null, function(result) {
-    console.log(result);
-  });
-  */
+  saveRatePair('USD', 'GBP');
 }
 
 function convertOnClick(info, tab){
-  refreshRates();
-
+  console.log(info);
+  console.log(tab);
+  
   var menuItem = info.menuItemId;
 
-  chrome.storage.local.get(menuItem, function(result){
+  chrome.storage.sync.get(menuItem, function(result){
     var rate = result[menuItem];
     console.log(rate);
 
@@ -77,7 +34,9 @@ function convertOnClick(info, tab){
     // Format result string, two decimal places
     result = '$' + result.toFixed(2).toString();
 
-    var title = base + ' to ' + menuItem;
+    var base = menuItem.substring(0,3);
+    var target = menuItem.substring(3,6);
+    var title = base + ' to ' + target;
 
     var notifOptions =  {
       type: 'basic',
@@ -91,13 +50,6 @@ function convertOnClick(info, tab){
   });
 }
 
-// Returns all rates saved 
-function getAllRates(){
-  chrome.storage.local.get(null, function(result) {
-    console.log(result);
-  });
-}
-
 function getDate(){
   var current_datetime = new Date();
 
@@ -106,73 +58,94 @@ function getDate(){
   return date;
 }
 
-chrome.runtime.onInstalled.addListener(function() {
-  refreshRates();
 
+chrome.runtime.onInstalled.addListener(function() {
+  console.log("onInstall");
+  saveRatePair('USD', 'CAD');
+  /*
   chrome.contextMenus.create({
     title: 'Last refreshed: ' + lastRefreshed + ' (click to refresh)',
     type: 'normal',
     contexts: ['page', 'selection'],
     onclick: refreshRates
   });
-  
-  for (let key of Object.keys(currencies)) {
-    chrome.contextMenus.create({
-      id: key,
-      title: key,
-      type: 'normal',
-      contexts: ['selection'],
-      onclick: convertOnClick
-    });
-  }
-
+  */
   chrome.contextMenus.create({
     title: 'Source',
     contexts: ['page'],
     onclick: source
   });
 
-  /*
-  chrome.contextMenus.create({
-    title: 'Debug',
-    contexts: ['page'],
-    onclick: debugFunction
+  chrome.storage.sync.get(null, function(result){
+    for (let key of Object.keys(result)) {
+      chrome.contextMenus.create({
+        id: key,
+        title: key.substring(0,3) + ' -> ' + key.substring(3,6),
+        type: 'normal',
+        contexts: ['selection'],
+        onclick: convertOnClick
+      });
+    }
+  
+    chrome.contextMenus.create({
+      title: 'Debug',
+      contexts: ['page'],
+      onclick: debugFunction
+    });
   });
-  */
 });
 
 chrome.storage.onChanged.addListener(function(list, sync) {
   let newlyDisabled = [];
   let newlyEnabled = [];
-  console.log(list);
 
-  if (!('removedContextMenu' in list))
-    return;
+  var key = Object.keys(list)[0];
     
-  let currentRemoved = list.removedContextMenu.newValue;
-  let oldRemoved = list.removedContextMenu.oldValue || [];
+  let currentRemoved = list[key].newValue || [];
+  let oldRemoved = list[key].oldValue || [];
 
-  for (let key of Object.keys(currencies)) {
-    if (currentRemoved.includes(key) && !oldRemoved.includes(key)) {
-      newlyDisabled.push(key);
-    } else if (oldRemoved.includes(key) && !currentRemoved.includes(key)) {
-      newlyEnabled.push({
-        id: key,
-        title: key
-      });
-    }
-  }
+  console.log(currentRemoved);
+  console.log(oldRemoved);
 
-  console.log(newlyEnabled);
-  for (let locale of newlyEnabled) {
+  // TODO handle adding duplicates
+
+  // currentRemoved not empty means adding option
+  if (currentRemoved.length != 0){
     chrome.contextMenus.create({
-      id: locale.id,
-      title: locale.title,
+      id: key,
+      title: key.substring(0,3) + ' -> ' + key.substring(3,6),
       type: 'normal',
       contexts: ['selection'],
+      onclick: convertOnClick
     });
   }
-  for (let locale of newlyDisabled) {
-    chrome.contextMenus.remove(locale);
+  
+  // oldRemoved is not empty means removing option
+  if (oldRemoved.length != 0){
+    chrome.contextMenus.remove(key);
   }
 });
+
+function saveRatePair(base, target){
+  getRatePair(base, target, function(pair, rate){
+    var key = pair;
+    var obj = {};
+    obj[key] = rate;
+    chrome.storage.sync.set(obj);
+  });
+}
+
+function getRatePair(base, target, callback) {
+  base = base.toUpperCase();
+  target = target.toUpperCase();
+  var pair = base + target;
+
+  var request = new XMLHttpRequest();
+  var url = 'https://api.exchangeratesapi.io/latest?base=' + base + '&symbols=' + target;
+  request.open('GET', url, true);
+  request.send();
+  request.onload = function() {
+    var rate = JSON.parse(this.response).rates[target];
+    callback(pair, rate);
+  }
+}

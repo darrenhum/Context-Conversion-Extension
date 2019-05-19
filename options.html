@@ -11,15 +11,56 @@
       margin: 5px;
       outline: none;
     }
+    #createPairs {
+      position: relative;
+      margin: auto;
+    }
+    .add {
+      width: 46%;
+      display: inline-block;
+    }
+    #arrow {
+      width: 4%;
+      text-align: center;
+      vertical-align: middle;
+      height: 23%;
+    }
+    #allPairs {
+      width: 100%;
+    }
+    .buttonHolder{
+      text-align: center;
+    }
+
     </style>
   </head>
 
   <body>
     <h2>Context Currency Converter</h2>
-    <h3>Currency Options</h3>
+    <h3>Add Currency Pair</h3>
     <form id="form">
     </form>
-    <button type='submit' value='Submit' id='optionsSubmit'>Submit</button>
+    <div id='createPairs'>
+      <select size='10' class='add' id='selectBase'></select>
+      <div class='add' id='arrow'>></div>
+      <select size='10' class='add' id='selectTarget'></select>
+    </div>
+
+    <div class="buttonHolder">
+        <button type='submit' value='Add' id='addPair'>Add currency pair</button>
+    </div>
+
+    <h3>
+      Current Currency Pairs
+    </h3>
+    <div></div>
+      <select size='10' id='allPairs'></select>
+    </div>
+
+    <div class="buttonHolder">
+      <button type='submit' value='Remove' id='removePair'>Remove Pair</button>
+    </div>
+
   </body>
   <script src="currencies.js"></script>
   <script src="options.js"></script>

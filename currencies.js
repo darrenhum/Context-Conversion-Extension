@@ -34,3 +34,10 @@ const currencies = {
     'ZAR': 'South African rand',
   };
   
+  function getCurrencies(){
+    var result = [];
+    for (let key of Object.keys(currencies)) {
+      result.push(key);
+    }
+    return result;
+  }
