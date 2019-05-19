@@ -1,6 +1,8 @@
 # Context-Conversion-Extension
 
-Chrome extension to add currency conversion to the context menu
+##Chrome extension to add currency conversion to the context menu
+Add your favorite currency pairs and they will show up in the context menu.
+
 
 ![Screenshot 1](https://github.com/darrenhum/Context-Conversion-Extension/blob/master/Screenshot1.png?raw=true)
 
