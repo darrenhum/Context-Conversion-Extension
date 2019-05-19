@@ -4,6 +4,7 @@
 Add your favorite currency pairs and they will show up in the context menu.
 
 
+### Screenshots
 ![Screenshot 1](https://github.com/darrenhum/Context-Conversion-Extension/blob/master/Screenshot1.png?raw=true)
 
 ![Screenshot 2](https://github.com/darrenhum/Context-Conversion-Extension/blob/master/Screenshot3.png?raw=true)
@@ -11,7 +12,7 @@ Add your favorite currency pairs and they will show up in the context menu.
 ![Screenshot 3](https://github.com/darrenhum/Context-Conversion-Extension/blob/master/Screenshot2.png?raw=true)
 
 
-## To install
+### To install
 Download as zip.
 
 Go to chrome://extensions.
