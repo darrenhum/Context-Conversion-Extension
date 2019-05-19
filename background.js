@@ -1,15 +1,5 @@
 'use strict';
 
-// TODO - refresh onclick
-// TODO - Settings for list of currencies to see (all currencies still in list)
-//      - Just chose to display select few
-// TODO - Set base currency 
-// TODO - Option to create currency pairs 
-// TODO - Re-adding currency does not work
-//      - It does, it just puts it at the bottom
-// TODO - Set currency pairs in chrome storage as USDCAD
-//      - Preappend current storage with USD base
-
 // To show when the last refresh of rates were
 var lastRefreshed = getDate();
 
