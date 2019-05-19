@@ -1,5 +1,5 @@
 const currencies = {
-    'AUD': 'Au',
+    'AUD': 'Australian dollar',
     'BGN': 'Bulgarian lev',
     'BRL': 'Brazilian real',
     'CAD': 'Canadian dollar',
@@ -9,7 +9,7 @@ const currencies = {
     'DKK': 'Danish krone',
     'EUR': 'Euro',
     'GBP': 'Pound sterling',
-    'HKD': 'Hong kong dollar',
+    'HKD': 'Hong Kong dollar',
     'HRK': 'Croatian kuna',
     'HUF': 'Hungarian forint',
     'IDR': 'Indonesian rupiah',
