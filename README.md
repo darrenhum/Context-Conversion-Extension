@@ -4,7 +4,9 @@ Chrome extension to add currency conversion to the context menu
 
 ![Screenshot 1](https://github.com/darrenhum/Context-Conversion-Extension/blob/master/Screenshot1.png?raw=true)
 
-![Screenshot 2](https://github.com/darrenhum/Context-Conversion-Extension/blob/master/Screenshot2.png?raw=true)
+![Screenshot 2](https://github.com/darrenhum/Context-Conversion-Extension/blob/master/Screenshot3.png?raw=true)
+
+![Screenshot 3](https://github.com/darrenhum/Context-Conversion-Extension/blob/master/Screenshot2.png?raw=true)
 
 
 ## To install
