@@ -5,7 +5,7 @@
 var lastRefreshed = getDate();
 
 function source(){
-  window.open('https://www.github.com/darrenhum', '_blank');
+  window.open('https://github.com/darrenhum/Context-Conversion-Extension', '_blank');
 }
 
 function debugFunction(){
@@ -62,6 +62,8 @@ function getDate(){
 chrome.runtime.onInstalled.addListener(function() {
   console.log("onInstall");
   saveRatePair('USD', 'CAD');
+  createSource();
+  createContext();
   /*
   chrome.contextMenus.create({
     title: 'Last refreshed: ' + lastRefreshed + ' (click to refresh)',
@@ -70,12 +72,15 @@ chrome.runtime.onInstalled.addListener(function() {
     onclick: refreshRates
   });
   */
-  chrome.contextMenus.create({
-    title: 'Source',
-    contexts: ['page'],
-    onclick: source
-  });
+});
 
+chrome.runtime.onStartup.addListener(function(){
+  console.log("onStartup");
+  createSource();
+  createContext();
+});
+
+function createContext(){
   chrome.storage.sync.get(null, function(result){
     for (let key of Object.keys(result)) {
       chrome.contextMenus.create({
@@ -93,7 +98,15 @@ chrome.runtime.onInstalled.addListener(function() {
       onclick: debugFunction
     });
   });
-});
+}
+
+function createSource(){
+  chrome.contextMenus.create({
+    title: 'Source',
+    contexts: ['page'],
+    onclick: source
+  });
+}
 
 chrome.storage.onChanged.addListener(function(list, sync) {
   let newlyDisabled = [];
